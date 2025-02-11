@@ -1,0 +1,13 @@
+default:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      method: session
+      schema: "{{ env_var('DBT_SCHEMA', 'default') }}"
+      host: spark
+      port: 10000
+      threads: 1
+      catalog: spark_catalog  # Importante para garantir que DBT use o catálogo correto
+      spark_conf:
+        "spark.databricks.delta.schema.autoMerge.enabled": "true"

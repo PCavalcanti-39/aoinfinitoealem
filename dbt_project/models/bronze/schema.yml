@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: pessoas
+    description: "Tabela contendo informações das pessoas cadastradas."
+    columns:
+      - name: id
+        description: "Identificador único da pessoa."
+      - name: nome
+        description: "Nome completo da pessoa."
+      - name: sexo
+        description: "Gênero da pessoa (Masculino, Feminino, Indefinido)."
+      - name: dt_nasc
+        description: "Data de nascimento da pessoa."
+      - name: created_at
+        description: "Data e hora de criação do registro."
+      - name: updated_at
+        description: "Data e hora da última atualização do registro."
+
+  - name: produtos
+    description: "Tabela contendo informações dos produtos disponíveis."
+    columns:
+      - name: id
+        description: "Identificador único do produto."
+      - name: descricao
+        description: "Descrição detalhada do produto."
+      - name: cat_desc
+        description: "Categoria do produto."
+      - name: created_at
+        description: "Data e hora de criação do registro."
+      - name: updated_at
+        description: "Data e hora da última atualização do registro."
+
+  - name: categorias
+    description: "Tabela de categorias de produtos."
+    columns:
+      - name: id
+        description: "Identificador único da categoria."
+      - name: nome
+        description: "Nome da categoria."
+
+  - name: pedidos
+    description: "Tabela contendo informações dos pedidos realizados."
+    columns:
+      - name: id
+        description: "Identificador único do pedido."
+      - name: id_pessoa
+        description: "Chave estrangeira referenciando a tabela de pessoas."
+      - name: dt_venda
+        description: "Data da venda."
+      - name: dispositivo
+        description: "Dispositivo utilizado para realizar o pedido."
+      - name: geohash
+        description: "Geolocalização do pedido."
+
+  - name: itens_pedidos
+    description: "Tabela contendo os itens associados aos pedidos."
+    columns:
+      - name: id
+        description: "Identificador único do item do pedido."
+      - name: id_pedido
+        description: "Chave estrangeira referenciando a tabela de pedidos."
+      - name: id_produto
+        description: "Chave estrangeira referenciando a tabela de produtos."
+      - name: valor_unit
+        description: "Valor unitário do item."
+
+  - name: auditoria_pedidos
+    description: "Tabela de auditoria para rastrear alterações nos pedidos."
+    columns:
+      - name: id
+        description: "Identificador único do registro de auditoria."
+      - name: sk_pedido
+        description: "Chave estrangeira referenciando o pedido auditado."
+      - name: acao
+        description: "Ação realizada (criação, atualização, deleção)."
+      - name: timestamp
+        description: "Momento da ação."

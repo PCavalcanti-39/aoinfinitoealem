@@ -1,0 +1,22 @@
+name: liga_sudoers_dbt
+version: "1.0"
+profile: default
+model-paths: ["models"]
+target-path: "/tmp/target"
+clean-targets: ["target", "dbt_modules"]
+
+models:
+  liga_sudoers_dbt:
+    bronze:
+      +materialized: table
+      +file_format: delta            # Força o uso do Delta Lake
+      +location_root: 's3a://bronze' # Define o diretório base no MinIO
+    silver:
+      +materialized: table
+      +file_format: delta
+      +location_root: 's3a://silver'
+    gold:
+      +materialized: table
+      +file_format: delta
+      +location_root: 's3a://gold'
+

@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: itens_by_person
+    description: "Análise agregada de itens por pessoa."
+    columns:
+      - name: nome
+        description: "Nome da pessoa."
+      - name: sexo
+        description: "Gênero da pessoa."
+      - name: dt_nasc
+        description: "Data de nascimento da pessoa."
+      - name: cat_desc
+        description: "Categoria do produto."
+      - name: descricao
+        description: "Descrição do produto."
+      - name: id_pedido
+        description: "Identificador do pedido."
+      - name: dt_venda
+        description: "Data da venda."
+      - name: dispositivo
+        description: "Dispositivo usado na venda."
+      - name: geohash
+        description: "Geolocalização da venda."
+      - name: total
+        description: "Valor total dos itens."

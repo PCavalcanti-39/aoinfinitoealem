@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: silver
+    schema: silver
+    tables:
+      - name: dim_pessoas    
+      - name: dim_produtos    
+      - name: fato_pedidos    
+  - name: bronze
+    schema: bronze
+    tables:
+      - name: pessoas
+      - name: produtos
+      - name: categorias
+      - name: pedidos
+      - name: itens_pedidos
+      - name: auditoria_pedidos
+      
+      

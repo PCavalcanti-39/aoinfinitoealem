@@ -1,0 +1,190 @@
+services:
+  postgres-oltp:
+    image: postgres:15
+    container_name: postgres_oltp
+    environment:
+      POSTGRES_USER: sudoers
+      POSTGRES_PASSWORD: sudoers
+      POSTGRES_DB: liga_sudoers
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+    ports:
+      - "5432:5432"
+    command: >
+      postgres -c wal_level=logical -c max_replication_slots=5 -c max_wal_senders=5      
+    volumes:
+      - postgres_oltp_data:/var/lib/postgresql/data
+      - ./postgresql-init/02_create_airflow_db.sql:/docker-entrypoint-initdb.d/02_create_airflow_db.sql
+      - ./postgresql-init/oltp.sql:/docker-entrypoint-initdb.d/oltp.sql
+    networks:
+      - app_network      
+
+  postgres-olap:
+    image: postgres:15
+    container_name: postgres_olap
+    environment:
+      POSTGRES_USER: sudoers
+      POSTGRES_PASSWORD: sudoers
+      POSTGRES_DB: liga_sudoers_dw
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_olap_data:/var/lib/postgresql/data
+      - ./postgresql-init/olap.sql:/docker-entrypoint-initdb.d/olap.sql      
+    networks:
+      - app_network      
+
+  debezium:
+    image: debezium/connect:2.3
+    container_name: debezium
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      GROUP_ID: liga_sudoers
+      CONFIG_STORAGE_TOPIC: debezium_configs
+      OFFSET_STORAGE_TOPIC: debezium_offsets
+      STATUS_STORAGE_TOPIC: debezium_status
+      DATABASE_HISTORY_KAFKA_TOPIC: schema-changes.liga_sudoers
+      DATABASE_HISTORY_KAFKA_BOOTSTRAP_SERVERS: kafka:9092      
+      CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_REST_ADVERTISED_HOST_NAME: debezium
+      CONNECT_GROUP_ID: liga_sudoers
+      CONNECT_CONFIG_STORAGE_TOPIC: debezium_configs
+      CONNECT_OFFSET_STORAGE_TOPIC: debezium_offsets
+      CONNECT_STATUS_STORAGE_TOPIC: debezium_status
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_LOG4J_LOGGERS: "org.reflections=ERROR"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/kafka/connect"
+      CONNECT_AWS_ACCESS_KEY_ID: sudoers123
+      CONNECT_AWS_SECRET_ACCESS_KEY: sudoers1234
+      CONNECT_S3_ENDPOINT: http://minio:9000
+      AWS_ACCESS_KEY_ID: sudoers123
+      AWS_SECRET_ACCESS_KEY: sudoers1234
+      S3_ENDPOINT: http://minio:9000
+    ports:
+      - "8083:8083"
+    depends_on:
+      - kafka
+      - postgres-oltp
+      - minio
+    volumes:
+      - ./debezium:/home
+      - ./kafka/connect:/kafka/connect
+      - ./kafka/config:/etc/kafka-connect
+    networks:
+      - app_network      
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    environment:
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      AWS_ACCESS_KEY_ID: sudoers123
+      AWS_SECRET_ACCESS_KEY: sudoers1234
+      S3_ENDPOINT: http://minio:9000
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./kafka/server.properties:/etc/kafka/server.properties
+      - ./kafka/:/home/appuser
+      - kafka-data:/var/lib/kafka
+    networks:
+      - app_network      
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"    
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper      
+    networks:
+      - app_network      
+
+
+  airflow:
+    image: apache/airflow:2.6.1
+    container_name: airflow
+    environment:
+      PYTHONPATH: /home/airflow/.local/lib/python3.7/site-packages
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: 'postgresql+psycopg2://sudoers:sudoers@postgres-oltp:5432/airflow'
+      AIRFLOW__CORE__FERNET_KEY: 'E_fqkKFRU_B5HA8kjT_KxbYJkLRq80yWPXUzLWm52Pg='
+    ports:
+      - "8080:8080"
+    user: root
+    depends_on:
+      - postgres-oltp
+    volumes:
+      - ./airflow_dags:/opt/airflow/dags
+      - airflow_logs:/opt/airflow/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["bash", "-c", "airflow db init && airflow webserver"]
+    networks:
+      - app_network    
+
+  spark:
+    image: bitnami/spark:latest
+    container_name: spark
+    environment:
+      SPARK_MODE: master
+      SPARK_CONF_DIR: /opt/bitnami/spark/conf
+      SPARK_EXTRA_CLASSPATH: /opt/bitnami/spark/jars/*
+    ports:
+      - "7077:7077"     # Porta do Spark Master
+      - "8081:8080"     # UI do Spark
+      - "8085:8085"
+    depends_on:
+      - minio
+      - postgres-olap
+    volumes:
+      - ./delta_lake:/data      
+      - ./delta_lake/entrypoint.sh:/usr/local/bin/entrypoint.sh
+      - ./delta_lake/pyspark:/opt/bitnami/spark/bin/pyspark-sudoers
+      - ./delta_lake/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
+      - ./dbt_project:/usr/app
+      - ./dbt_project/profiles.yml:/root/.dbt/profiles.yml
+    command: ["/usr/local/bin/entrypoint.sh"]
+    networks:
+      - app_network    
+
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: sudoers123
+      MINIO_ROOT_PASSWORD: sudoers1234
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+      - ./quickstart/:/home/
+    networks:
+      - app_network      
+
+volumes:
+  postgres_oltp_data:
+  postgres_olap_data:
+  airflow_logs:
+  dbt_project:
+  delta_lake:
+  minio_data:
+  zookeeper-data:
+  kafka-data:
+
+networks:
+  app_network:
+    driver: bridge

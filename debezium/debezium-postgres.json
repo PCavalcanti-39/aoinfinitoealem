@@ -1,0 +1,22 @@
+{
+  "name": "postgres-connector-pessoas",
+  "config": {
+      "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+      "database.hostname": "postgres_oltp",
+      "database.port": "5432",
+      "database.user": "sudoers",
+      "database.password": "sudoers",
+      "database.dbname": "liga_sudoers",
+      "table.include.list": "public.pessoas",
+      "database.server.name": "oltp_server",
+      "topic.prefix": "liga_sudoers",
+      "database.history.kafka.bootstrap.servers": "kafka:9092",
+      "database.history.kafka.topic": "schema-changes.liga_sudoers",
+      "plugin.name": "pgoutput",
+      "slot.name": "debezium_slot",
+      "publication.name": "pessoas_pub",
+      "time.precision.mode": "adaptive",
+      "decimal.handling.mode": "double",
+      "include.schema.changes": "true"
+  }
+}
