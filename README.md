@@ -3,11 +3,15 @@
 
 Bem-vindo ao Mapa do Engenheiro de Dados, um programa prático e desafiador que recria situações reais enfrentadas por profissionais da área de dados. Neste módulo, você será guiado na construção de uma arquitetura robusta e paralela, que simula um ambiente dinâmico e ininterrupto, tal como ocorre no mercado.
 
+Começaremos montando uma arquitetura completa tradicional, "mais antiga", utilizada no mercado e evoluíremos para as últimas tendências de arquitetura.
+
 Ao longo do curso, você aprenderá os fundamentos e aplicará técnicas avançadas de modelagem de dados, desenvolvendo consultas transacionais e analíticas em SQL, alcançando um nível de maestria.
+
+Ao final você terá uma visão completa de início, evolução e ficará por dentro das novidades da jornada de engenharia de dados!
 
 # Liga Sudoers - Arquitetura de Big Data
 
-Este repositório visa mostrar o processo trandicional de geração de dados em ambiente transacionais e ETL para ambiente analiticos. Ao subir os containeres serão:
+Este repositório visa mostrar o processo tradicional de geração de dados em ambiente transacionais e ETL para ambiente analiticos. Ao subir os containeres serão:
   * 1 ambiente PostgreSQL com modelagem transacional, usando 3 forma normal (3FN)
   * 1 ambiente PostgreSQL com modelagem dimensional. usando star schema. 
   * 1 ambiente com Debezium para CDC.
