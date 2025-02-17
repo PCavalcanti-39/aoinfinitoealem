@@ -7,6 +7,8 @@ Começaremos montando uma arquitetura completa tradicional, "mais antiga", utili
 
 Ao longo do curso, você aprenderá os fundamentos e aplicará técnicas avançadas de modelagem de dados, desenvolvendo consultas transacionais e analíticas em SQL, alcançando um nível de maestria.
 
+Para melhor entendimento de todos os processos e utilização das ferramentas, vamos simular um caso de uso real de dados para identificação de fraudes em compras com dispositivos móveis. A idéia é mostrar não somente a tecnologia mas a utilização no dia a dia de uma empresa.
+
 Ao final você terá uma visão completa de início, evolução e ficará por dentro das novidades da jornada de engenharia de dados!
 
 # Liga Sudoers - Arquitetura de Big Data
@@ -30,13 +32,13 @@ Este repositório visa mostrar o processo tradicional de geração de dados em a
   [Vídeo Explicativo](https://youtu.be/Kc-mmy8eMcA)
 
 
-## Estrutura da Fraude
+## Estrutura proposta para análise da Fraude
 
-A fraude é usada para treinar o modelo de Machine Learning que será usado para identificar fraudes em tempo real. O ambiente dimensional (DataWarehouse) extrai os dados via ETL (DBT) e popula as informações no nosso Delta Lake para ser usado como ambiente analitico. Esse é um processo mais comum em ambientes de big data.
+Os dados de fraudes são utilizados para treinar o modelo de Machine Learning que será usado para identificar fraudes em tempo real. O ambiente dimensional (DataWarehouse) extrai os dados via ETL (DBT) e popula as informações no nosso Delta Lake para ser usado como ambiente analitico. Esse é um processo mais comum em ambientes de big data.
 
-A fraude é encontrada no geohash (Lat/Lon) da pessoa que fez o pedido. Será considerado fraude qualquer posição geohash fora dos estados de SP, MG e RJ. Ou seja, caso a compra seja de uma posição fora dos estados, deverá ser marcada como fraude. 
+A fraude é encontrada no geohash (Lat/Lon) da pessoa que fez o pedido. Será considerado fraude qualquer posição geohash fora dos estados de SP, MG e RJ. Ou seja, caso a compra seja de uma posição fora dos estados, deverá ser marcada como fraude. Também será considerada fraude qualquer pedido que tenha um dispositivo diferente dos anteriores na hora da compra. Ou seja, se a pessoa comprou anteriormente com Iphone, e agora tentou comprar com um Samsung o pedido será marcado como fraude.
 
-A fraude é encontrar no dispositivo da pessoa que fez o pedido. Será considerado fraude qualquer pedido que tenha um dispositivo diferente dos anteriores na hora da compra. Ou seja, se a pessoas comprou anteriormente com Iphone, e agora tentou comprar com um Samsung o pedido será marcado como fraude. 
+Esses casos de uso são somente a título de exemplo para simulação de uma política de detecção de fraude em um e-commerce.
 
 ## Estrutura do Projeto
 ```bash
