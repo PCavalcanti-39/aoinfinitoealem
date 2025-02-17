@@ -69,13 +69,13 @@ A fraude é encontrar no dispositivo da pessoa que fez o pedido. Será considera
 
 Perfis de profissionais no dia a dia dos processos mostrados.
  - [Data Architect](./docs/perfis.md#data-architect) (Arquiteto de Dados) 
- - Data Engineer (Engenheiro de Dados)
- - Data Scientist (Cientista de Dados)
- - Platform Engineer (Engenheiro de Plataforma)
- - Machine Learning Engineer - MLOps (Engenheiro de Machine Learning - MLOps)
- - BI Analyst (Analista de BI)
- - Data Administrator (Administrador de Dados)
- - DevOps Engineer (Engenheiro de DevOps)
+ - [Data Engineer](./docs/perfis.md#data-engineer)(Engenheiro de Dados)
+ - [Data Scientist](./docs/perfis.md#data-scientist) (Cientista de Dados)
+ - [Platform Engineer](./docs/perfis.md#plataform-engineer) (Engenheiro de Plataforma)
+ - [Machine Learning Engineer - MLOps](./docs/perfis.md#machine-learning-engineer) (Engenheiro de Machine Learning - MLOps)
+ - [BI Analyst](./docs/perfis.md#data_analyst) (Analista de BI)
+ - [Data Administrator](./docs/perfis.md#data-administrator) (Administrador de Dados)
+ - [DevOps Engineer](./docs/perfis.md#data-engineer) (Engenheiro de DevOps)
 
 
 ## Pré-requisitos

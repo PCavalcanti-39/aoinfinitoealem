@@ -12,7 +12,7 @@ Tarefas:
     Propor integrações para Machine Learning e GenAI.
 
 
-### Data Engineer (Engenheiro de Dados)
+### [Data Engineer](#data-engineer) (Engenheiro de Dados)
 
 Responsável por:
 
@@ -29,7 +29,7 @@ Tarefas:
 
 
 
-### Data Scientist (Cientista de Dados)
+### [Data Scientist](#data-scientist) (Cientista de Dados)
 
 Responsável por:
 
@@ -42,7 +42,8 @@ Tarefas:
     Realizar análises exploratórias e preparar dados para modelos.
     Integrar resultados de Machine Learning com Dashboards e soluções de GenAI.
 
-### Platform Engineer (Engenheiro de Plataforma)    
+### [Platform Engineer](#plataform-engineer) (Engenheiro de Plataforma)
+
 Se o foco for na infraestrutura e na administração do ambiente (clusters, redes, segurança, etc.), o Engenheiro de Plataforma ou Engenheiro de Infraestrutura pode ser o responsável. 
 Esse profissional cuida de:
 
@@ -50,7 +51,7 @@ Esse profissional cuida de:
     Configuração de balanceamento de carga, alta disponibilidade e recuperação de desastres.
     Monitoramento do desempenho ferramentas como Prometheus, Grafana ou outro.
 
-### Machine Learning Engineer - MLOps (Engenheiro de Machine Learning - MLOps)
+### [Machine Learning Engineer](#machine-learning-engineer) - MLOps (Engenheiro de Machine Learning - MLOps)
 
 Responsável por:
 
@@ -63,20 +64,7 @@ Tarefas:
     Configurar ferramentas de MLOps para treinamento e deploy de modelos.
     Monitorar a performance dos modelos e realizar ajustes conforme necessário.
 
-### BI Analyst (Analista de BI)
-
-Responsável por:
-
-    Criar visualizações e relatórios que traduzam dados em insights para o negócio.
-    Garantir que os Dashboards consumam dados diretamente do DeltaLake ou via APIs.
-
-Tarefas:
-
-    Desenvolver dashboards conectados ao DeltaLake.
-    Traduzir necessidades de negócio em relatórios acionáveis.
-    Manter e ajustar visualizações conforme mudanças nos dados ou no pipeline.
-
-### Data Administrator (Administrador de Dados)
+### [Data Administrator](#data-administrator) (Administrador de Dados)
 
 Responsável por:
 
@@ -89,7 +77,7 @@ Tarefas:
     Configurar e gerenciar políticas de segurança e retenção de dados.
     Realizar auditorias regulares para garantir conformidade com normas como LGPD/GPDR.
 
-### DevOps Engineer (Engenheiro de DevOps)
+### [DevOps Engineer](#devops-engineer) (Engenheiro de DevOps)
 
 Responsável por:
 
@@ -103,7 +91,8 @@ Tarefas:
     Criar pipelines CI/CD para deploy de código e infra.
 
 
-### Database Administrator (DBA) ou Data Architect
+### [Database Administrator](#database-dministrator) (DBA) ou Data Architect
+
 Modelagem de Banco de Dados Transacional
 
     Profissional: Database Administrator (DBA) ou Data Architect
@@ -113,7 +102,8 @@ Modelagem de Banco de Dados Transacional
             Criar índices, restrições, triggers e stored procedures para otimizar operações.
             Monitorar e otimizar o desempenho do banco. 
 
-### Data Warehouse Specialist ou Data Architect            
+### [Data Warehouse Specialist](#data-warehouse-pecialist) ou Data Architect     
+      
 Modelagem Dimensional
 
     Profissional: Data Warehouse Specialist ou Data Architect
@@ -124,7 +114,8 @@ Modelagem Dimensional
             Garantir que os modelos atendam às necessidades de relatórios e análises.
 
 
-### Data Engineer
+### [Data Engineer ](#data-engineer)
+
 Profissional: Data Engineer
 
     Responsabilidades:
@@ -133,12 +124,18 @@ Profissional: Data Engineer
         Integrar dados de múltiplas fontes e garantir qualidade e consistência.
         Monitorar e corrigir falhas nos pipelines para garantir alta disponibilidade.
 
-### Data Analyst ou Business Intelligence (BI) Analyst
-Criação de Dashboards
+### [Data Analyst](#data-analyst) ou Business Intelligence (BI) Analyst
 
-    Profissional: Data Analyst ou Business Intelligence (BI) Analyst
-        Responsabilidades:
-            Criar visualizações e relatórios interativos para tomada de decisão.
-            Utilizar ferramentas de BI como Power BI, Tableau, Looker ou Metabase.
-            Definir métricas e KPIs com base nos requisitos de negócios.
-            Trabalhar diretamente com as partes interessadas para transformar dados em insights acionáveis.
+    Responsável por:
+        Criar visualizações e relatórios que traduzam dados em insights para o negócio.
+        Garantir que os Dashboards consumam dados diretamente do DeltaLake ou via APIs.
+
+    Tarefas:
+
+        Desenvolver dashboards conectados ao DeltaLake.
+        Traduzir necessidades de negócio em relatórios acionáveis.
+        Manter e ajustar visualizações conforme mudanças nos dados ou no pipeline.
+        Criar visualizações e relatórios interativos para tomada de decisão.
+        Utilizar ferramentas de BI como Power BI, Tableau, Looker ou Metabase.
+        Definir métricas e KPIs com base nos requisitos de negócios.
+        Trabalhar diretamente com as partes interessadas para transformar dados em insights acionáveis.
