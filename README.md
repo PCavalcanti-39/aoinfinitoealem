@@ -76,6 +76,7 @@ Perfis de profissionais no dia a dia dos processos mostrados.
  - [BI Analyst](./docs/perfis.md#data_analyst) (Analista de BI)
  - [Data Administrator](./docs/perfis.md#data-administrator) (Administrador de Dados)
  - [DevOps Engineer](./docs/perfis.md#data-engineer) (Engenheiro de DevOps)
+ - [Analytics Engineer](./docs/perfis.md#analytics-engineer) (Engenheiro de Analytics)
 
 
 ## Pré-requisitos

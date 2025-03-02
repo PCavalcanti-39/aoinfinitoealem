@@ -8,7 +8,7 @@ Responsável por:
 Tarefas:
 
     Definir o fluxo de dados entre PostgreSQL, Kafka, Airflow/DBT e DataLake/DeltaLake.
-    Criar estratégias de particionamento, armazenamento e governança no DeltaLake.
+    Definir estratégias de particionamento, armazenamento e governança no DeltaLake para otimizar desempenho e escalabilidade.
     Propor integrações para Machine Learning e GenAI.
 
 
@@ -16,7 +16,7 @@ Tarefas:
 
 Responsável por:
 
-    Criar e gerenciar pipelines de dados que integram diferentes fontes, como PostgreSQL, Debezium, Kafka e DataLake/DeltaLake.
+    Criar e gerenciar pipelines de dados que integram diferentes fontes, omo PostgreSQL, Debezium, Kafka, Airflow, dbt e DataLake/DeltaLake.
     Configurar e otimizar a ingestão de dados em streaming e batch.
     Garantir a qualidade, consistência e segurança dos dados ao longo do pipeline.
 
@@ -40,7 +40,7 @@ Tarefas:
 
     Criar pipelines de Machine Learning conectados ao DeltaLake.
     Realizar análises exploratórias e preparar dados para modelos.
-    Integrar resultados de Machine Learning com Dashboards e soluções de GenAI.
+    Integrar resultados de Machine Learning em dashboards, aplicações e soluções de GenAI.
 
 ### [Platform Engineer](#plataform-engineer) (Engenheiro de Plataforma)
 
@@ -49,7 +49,7 @@ Esse profissional cuida de:
 
     Deploy e manutenção dos clusters.
     Configuração de balanceamento de carga, alta disponibilidade e recuperação de desastres.
-    Monitoramento do desempenho ferramentas como Prometheus, Grafana ou outro.
+    Monitoramento de desempenho utilizando ferramentas como Prometheus, Grafana ou outras soluções adequadas.
 
 ### [Machine Learning Engineer](#machine-learning-engineer) - MLOps (Engenheiro de Machine Learning - MLOps)
 
@@ -60,7 +60,7 @@ Responsável por:
 
 Tarefas:
 
-    Conectar pipelines do DataLake/DeltaLake ao ambiente de Machine Learning.
+    Construir pipelines para integrar dados do DataLake/DeltaLake a modelos de Machine Learning, garantindo versionamento e rastreabilidade dos dados.
     Configurar ferramentas de MLOps para treinamento e deploy de modelos.
     Monitorar a performance dos modelos e realizar ajustes conforme necessário.
 
@@ -75,14 +75,14 @@ Tarefas:
 
     Monitorar permissões e acessos no DeltaLake e nos pipelines.
     Configurar e gerenciar políticas de segurança e retenção de dados.
-    Realizar auditorias regulares para garantir conformidade com normas como LGPD/GPDR.
+    Realizar auditorias regulares para garantir conformidade com normas como LGPD/GDPR.
 
 ### [DevOps Engineer](#devops-engineer) (Engenheiro de DevOps)
 
 Responsável por:
 
     Configurar, monitorar e escalar a infraestrutura que suporta o ambiente.
-    Automatizar deploys e manutenção do sistema.
+    Automatizar deploys de código e infraestrutura utilizando pipelines CI/CD.
 
 Tarefas:
 
@@ -99,7 +99,7 @@ Modelagem de Banco de Dados Transacional
         Responsabilidades:
             Planejar e implementar a estrutura de bancos de dados relacionais.
             Garantir normalização, integridade referencial e alta performance em operações transacionais.
-            Criar índices, restrições, triggers e stored procedures para otimizar operações.
+            Criar e otimizar índices, constraints, triggers e stored procedures para garantir eficiência e integridade transacional.
             Monitorar e otimizar o desempenho do banco. 
 
 ### [Data Warehouse Specialist](#data-warehouse-pecialist) ou Data Architect     
@@ -110,7 +110,7 @@ Modelagem Dimensional
         Responsabilidades:
             Projetar esquemas dimensionais como Star Schema e Snowflake Schema.
             Criar tabelas de fato e dimensão para facilitar consultas analíticas.
-            Trabalhar com conceitos como surrogate keys, granularidade e hierarquias.
+            Aplicar conceitos de modelagem como surrogate keys, granularidade, hierarquias e Slowly Changing Dimensions (SCDs).
             Garantir que os modelos atendam às necessidades de relatórios e análises.
 
 
@@ -132,10 +132,26 @@ Profissional: Data Engineer
 
     Tarefas:
 
-        Desenvolver dashboards conectados ao DeltaLake.
+        Desenvolver dashboards interativos conectados ao DeltaLake para suportar a tomada de decisão empresarial.
         Traduzir necessidades de negócio em relatórios acionáveis.
         Manter e ajustar visualizações conforme mudanças nos dados ou no pipeline.
         Criar visualizações e relatórios interativos para tomada de decisão.
         Utilizar ferramentas de BI como Power BI, Tableau, Looker ou Metabase.
         Definir métricas e KPIs com base nos requisitos de negócios.
         Trabalhar diretamente com as partes interessadas para transformar dados em insights acionáveis.
+
+
+### [Analytics Engineer](#analytics-engineer)
+
+Responsável por:
+
+    Criar e manter a camada semântica e transformações analíticas para suportar a tomada de decisão.
+    Desenvolver modelos de dados e tabelas otimizadas para consumo em ferramentas de BI e relatórios.
+    Automatizar a preparação e transformação de dados para análises estratégicas.
+
+Tarefas:
+
+    Construir modelos de dados em dbt, Snowflake, BigQuery ou Redshift.
+    Criar camadas de dados analíticas dentro do Data Warehouse.
+    Garantir a performance e escalabilidade das consultas para dashboards e relatórios.
+    Trabalhar em conjunto com Data Analysts e BI Analysts para garantir que os dados sejam acessíveis e confiáveis.        
