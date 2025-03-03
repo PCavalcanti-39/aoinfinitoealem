@@ -29,11 +29,12 @@ Este repositório visa mostrar o processo trandicional de geração de dados em 
 ## Perfil e responsabilidades
 
 Perfis de profissionais e suas responsabilidades no dia a dia dos processos mostrados.
- - Data Architect (Arquiteto de Dados)
- - Data Engineer (Engenheiro de Dados)
- - Platform Engineer (Engenheiro de Plataforma)
- - Data Administrator (Administrador de Dados)
- - DevOps Engineer (Engenheiro de DevOps)
+  - [Data Architect](../docs/perfis.md#data-architect) (Arquiteto de Dados) 
+  - [Data Engineer](../docs/perfis.md#data-engineer)(Engenheiro de Dados)
+  - [Platform Engineer](../docs/perfis.md#plataform-engineer) (Engenheiro de Plataforma)  
+  - [Data Administrator](../docs/perfis.md#data-administrator) (Administrador de Dados)
+  - [DevOps Engineer](../docs/perfis.md#devops-engineer) (Engenheiro de DevOps)
+
 
 
 # Streaming
@@ -138,46 +139,10 @@ curl -s http://debezium:8083/connectors/minio-sink-connector/status
 ```bash
 curl -X DELETE http://debezium:8083/connectors/minio-sink-connector
 curl -X POST http://debezium:8083/connectors/minio-sink-connector/restart
+```
 
-
+## Kafka lê o tópico
+```bash
 docker exec -it kafka /bin/kafka-console-consumer --bootstrap-server kafka:9092 --topic liga_sudoers.public.pessoas --from-beginning
 ```
 
-
-## PySpark
-Vamos usar o PySpark para trazer os dados 
-
-```bash
-docker exec -it spark bash
-```
-
-```bash
-spark-sql 
-```
-
-
-
-
-
-# pySpark
-
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder \
-    .appName("MinIO Test") \
-    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-    .config("fs.s3a.access.key", "sudoers123") \
-    .config("fs.s3a.secret.key", "sudoers1234") \
-    .config("fs.s3a.endpoint", "http://minio:9000") \
-    .config("fs.s3a.path.style.access", "true") \
-    .config("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
-    .config("fs.s3a.connection.ssl.enabled", "false") \
-    .getOrCreate()
-
-df = spark.read.option("header", "true").csv(f"s3a://raiz/organizations/organizations.csv")
-
-# Criar DataFrame e salvar no MinIO
-data = [("Alice", 34), ("Bob", 45)]
-df = spark.createDataFrame(data, ["Name", "Age"])
-df.write.mode("delta").parquet("s3a://raiz/test_output-delta/")

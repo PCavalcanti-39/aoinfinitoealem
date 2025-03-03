@@ -28,17 +28,42 @@ Este repositório visa mostrar o processo trandicional de geração de dados em 
 
 ## Perfil e responsabilidades
 
-Perfis de profissionais e suas responsabilidades no dia a dia dos processos mostrados.
- - Data Architect (Arquiteto de Dados)
- - Data Engineer (Engenheiro de Dados)
- - Data Scientist (Cientista de Dados)
- - Data Administrator (Administrador de Dados)
+Perfis de profissionais e suas responsabilidades no dia a dia dos processos mostrados. 
+  - [Data Architect](../docs/perfis.md#data-architect) (Arquiteto de Dados) 
+  - [Data Engineer](../docs/perfis.md#data-engineer)(Engenheiro de Dados)
+  - [Data Scientist](../docs/perfis.md#data-scientist) (Cientista de Dados)
+  - [Platform Engineer](../docs/perfis.md#plataform-engineer) (Engenheiro de Plataforma)  
+  - [Data Administrator](../docs/perfis.md#data-administrator) (Administrador de Dados)
+  - [Analytics Engineer](../docs/perfis.md#analytics-engineer) (Engenheiro de Analytics)
  
 
 # Modo Old School
 Antes de avançarmos para os métodos mais atuais, vamos entender o passado. Começando pelo Hadoop e Hive. 
 
+Hadoop é um FileSystem Distribuído, ele garante a disponibilidade do arquivo pois o mesmo estará distribuído em várias outras máquinas.
+
 ## O passado
+
+Quando o Big Data nasceu, não era usando SQL para se extrair os dados.
+
+```bash
+ grep -E ';M;' quickstart/dim_pessoas.csv
+
+ cat quickstart/dim_pessoas.csv | grep -oE 'M|F' | sort | uniq -c
+
+ awk -F';' 'NR>1 {split($5, d, "-"); idade=2025-d[1]; if (idade >= 18 && idade <= 40) print $4}' quickstart/dim_pessoas.csv | sort | uniq -c
+
+ awk -F';' 'NR>1 {split($5, d, "-"); idade=2025-d[1]; if (idade >= 18 && idade <= 40) print $0}' quickstart/dim_pessoas.csv
+```
+
+## MapReduce 
+
+Ver arquivo `quickstart/mapreduce.java`
+
+## HIVE
+
+O Hive foi criado usando a linguagem HQL, ele veio para ser parecido com o SQL.
+
 
 ### Movendo dados do DW para dentro do HDFS
 Vamos usar o MINIO no luhar do HDFS, mas a ideia é a mesma. Ser um armazenamento distribuído.
