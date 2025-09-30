@@ -1,201 +1,174 @@
-# Jornada Engenharia de dados
-![Desafio Engenheiro de Dados](Desafio%20-%20Jornada%20Engenharia%20de%20Dados.png "Desafio Engenheiro de Dados")
+# Projeto de Pipeline de Taxas de Cambio com Enriquecimento LLM
+**Aluno:** Priscilla Cavalcanti de Almeida  
+**Descricao:** Este projeto realiza o processo completo de ingestao, transformacao, carga e enriquecimento de dados de taxas de cambio obtidas via API publica, aplicando conceitos de engenharia de dados (camadas Raw/Silver/Gold) e geracao de insights automaticos com modelo LLM (ChatGPT).
 
-Bem-vindo ao Mapa do Engenheiro de Dados, um programa prático e desafiador que recria situações reais enfrentadas por profissionais da área de dados. Neste módulo, você será guiado na construção de uma arquitetura robusta e paralela, que simula um ambiente dinâmico e ininterrupto, tal como ocorre no mercado.
+---
 
-Ao longo do curso, você aprenderá os fundamentos e aplicará técnicas avançadas de modelagem de dados, desenvolvendo consultas transacionais e analíticas em SQL, alcançando um nível de maestria.
+## Arquitetura do Projeto
 
-# Liga Sudoers - Arquitetura de Big Data
-
-Este repositório visa mostrar o processo trandicional de geração de dados em ambiente transacionais e ETL para ambiente analiticos. Ao subir os containeres serão:
-  * 1 ambiente PostgreSQL com modelagem transacional, usando 3 forma normal (3FN)
-  * 1 ambiente PostgreSQL com modelagem dimensional. usando star schema. 
-  * 1 ambiente com Debezium para CDC.
-  * 1 ambiente com Kafka para Streaming.
-  * 1 ambiente com Zookeeper para apoio aos serviços.
-  * 1 ambiente com Airflow para orquestração de pipelines.
-  * 1 ambiente com DBT para Transformação de dados.
-  * 1 ambiente com Spark para processamento distribuído.
-  * 1 ambiente com MinIO para armazenamento distribuído.
-  
-  
-  Dentro do repositório teremos os scripts em Python que irão simular a entrada de dados:
-  * liga_sudoers_historico.py - Gera dados históricos com pedidos com data retroativas, não gera novos produtos nem novos clientes. Gera 1% de dados que serão considerados fraude para treinamento do modelo. 
-  * liga_sudoers_streaming.py - Gera dados streaming com pedidos com data atual, gera novos clientes e registra novos pedidos. Gera 5% de dados que serão considerados fraude para treinamento do modelo. 
-
-  [Vídeo Explicativo](https://youtu.be/Kc-mmy8eMcA)
-
-
-## Estrutura da Fraude
-
-A fraude é usada para treinar o modelo de Machine Learning que será usado para identificar fraudes em tempo real. O ambiente dimensional (DataWarehouse) extrai os dados via ETL (DBT) e popula as informações no nosso Delta Lake para ser usado como ambiente analitico. Esse é um processo mais comum em ambientes de big data.
-
-A fraude é encontrada no geohash (Lat/Lon) da pessoa que fez o pedido. Será considerado fraude qualquer posição geohash fora dos estados de SP, MG e RJ. Ou seja, caso a compra seja de uma posição fora dos estados, deverá ser marcada como fraude. 
-
-A fraude é encontrar no dispositivo da pessoa que fez o pedido. Será considerado fraude qualquer pedido que tenha um dispositivo diferente dos anteriores na hora da compra. Ou seja, se a pessoa comprou anteriormente com Iphone, e agora tentou comprar com um Samsung o pedido será marcado como fraude. 
-
-## Estrutura do Projeto
-```bash
-.
-├── airflow_dags
-├── dbt_project
-│   ├── dbt_project.yml
-│   ├── logs
-│   │   └── dbt.log
-│   ├── models
-│   │   └── example_model.sql
-│   └── profiles.yml
-├── debezium-init
-│   ├── 01_enable_replication.sql
-│   ├── connect-log4j.properties
-│   └── postgres-connector.json
-├── delta_lake
-│   ├── entrypoint.sh
-│   ├── jars
-│   │   ├── delta-core_2.12-2.4.0.jar
-│   │   └── delta-storage-2.4.0.jar
-│   └── pyspark
-├── docker-compose.yml
-├── kafka
-│   └── server.properties
-├── postgresql-init
-│   └── 02_create_airflow_db.sql
-├── quickstart
-│   ├── organizations.csv
-│   └── people.zip
-└── README.md
 ```
-## Perfis profissionais atuantes
-
-Perfis de profissionais no dia a dia dos processos mostrados.
- - [Data Architect](./docs/perfis.md#data-architect) (Arquiteto de Dados) 
- - [Data Engineer](./docs/perfis.md#data-engineer)(Engenheiro de Dados)
- - [Data Scientist](./docs/perfis.md#data-scientist) (Cientista de Dados)
- - [Platform Engineer](./docs/perfis.md#plataform-engineer) (Engenheiro de Plataforma)
- - [Machine Learning Engineer - MLOps](./docs/perfis.md#machine-learning-engineer) (Engenheiro de Machine Learning - MLOps)
- - [BI Analyst](./docs/perfis.md#data_analyst) (Analista de BI)
- - [Data Administrator](./docs/perfis.md#data-administrator) (Administrador de Dados)
- - [DevOps Engineer](./docs/perfis.md#data-engineer) (Engenheiro de DevOps)
- - [Analytics Engineer](./docs/perfis.md#analytics-engineer) (Engenheiro de Analytics)
-
-
-## Pré-requisitos
-
-- Python 3.x
-- Docker e Docker Compose
-- Biblioteca `psycopg2`
-- Biblioteca `Faker`
-
-
-## Antes de Executar
-
-
-### Instalação do Docker Compose
-```bash
-sudo apt update
-sudo apt install docker-compose-plugin
+/content
+raw/       → Armazena os dados brutos em JSON (Ingest)
+silver/    → Dados tratados e normalizados (Transform)
+gold/      → Dados finais consolidados (Load)
+gold/insights/ → Resumos e analises automaticas geradas pela LLM
 ```
 
-### Verificação da Versão (opcional)
-```bash
-docker compose version
+---
+
+## Etapa 1 – Ingestao (Coleta de Dados da API)
+
+O script coleta as taxas de cambio da API `https://v6.exchangerate-api.com` e armazena os dados brutos (RAW) em formato JSON com nomeacao baseada na data atual.
+
+### Codigo:
+```python
+import requests
+import json
+from datetime import datetime
+from pathlib import Path
+
+# Configuracao da API
+API_KEY = "b504fc0b61276b0453c2db85"
+BASE_CURRENCY = "USD"
+RAW_DIR = Path("raw")
+RAW_DIR.mkdir(exist_ok=True)
+
+# Monta URL da API
+url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{BASE_CURRENCY}"
+
+# Requisição
+try:
+    response = requests.get(url, timeout=30)
+except requests.RequestException as e:
+    print("Erro de conexão:", e)
+    exit()
+
+# Tratamento da resposta
+if response.status_code == 200:
+    data = response.json()
+    if data.get("result") == "success":
+        today = datetime.today().strftime("%Y-%m-%d")
+        file_path = RAW_DIR / f"{today}.json"
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        print(f"Dados salvos com sucesso em: {file_path}")
+    else:
+        print("Erro na API:", data)
+else:
+    print("Erro de conexão HTTP:", response.status_code)
 ```
 
+---
 
-## Como Executar
+## Etapa 2 – Transformação (Normalização e Limpeza)
 
-### Iniciar Docker pela primeira vez (somente a primeira vez que rodar o processo)
-```bash
-docker compose up --build
+Nesta etapa, os arquivos brutos são normalizados, convertendo a estrutura JSON em **DataFrame Pandas**. São aplicadas validações para remover valores inválidos, duplicados e formatar os tipos de dados.
+
+### Código:
+```python
+from pathlib import Path
+from datetime import datetime
+import json
+import pandas as pd
+import sys, subprocess
+
+BASE_DIR = Path("/content")
+RAW_DIR = BASE_DIR / "raw"
+SILVER_DIR = BASE_DIR / "silver"
+GOLD_DIR = BASE_DIR / "gold"
+
+for d in [RAW_DIR, SILVER_DIR, GOLD_DIR]:
+    d.mkdir(parents=True, exist_ok=True)
+
+# Localiza o arquivo mais recente da camada RAW
+raw_files = sorted(RAW_DIR.glob("*.json"))
+raw_file = raw_files[-1]
+
+# Carrega o JSON
+with open(raw_file, "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+base_currency = data.get("base_code") or "USD"
+rates = data.get("conversion_rates", {})
+
+records = [
+    {"base_currency": base_currency, "moeda": m, "taxa": float(t), "timestamp": datetime.utcnow().isoformat()}
+    for m, t in rates.items() if isinstance(t, (int, float)) and t > 0
+]
+
+df = pd.DataFrame(records).drop_duplicates(subset=["base_currency", "moeda", "timestamp"])
+
+# Salva em JSON (Silver)
+today = datetime.today().strftime("%Y-%m-%d")
+silver_file = SILVER_DIR / f"{today}.json"
+df.to_json(silver_file, orient="records", indent=2, force_ascii=False)
+
+# Salva em Parquet (Gold)
+gold_file = GOLD_DIR / f"{today}.parquet"
+try:
+    df.to_parquet(gold_file, index=False, engine="pyarrow")
+except Exception:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "pyarrow"])
+    df.to_parquet(gold_file, index=False, engine="pyarrow")
 ```
 
-### Iniciar Docker pela segunda vez
-```bash
-docker compose up 
+---
+
+## Etapa 3 – Carga (Load)
+
+Carrega os dados transformados da camada **Silver** e grava o resultado final em **Parquet** na camada **Gold**.
+
+### Código:
+```python
+import pandas as pd
+from pathlib import Path
+from datetime import datetime
+
+SILVER_DIR = Path("silver")
+GOLD_DIR = Path("gold")
+GOLD_DIR.mkdir(exist_ok=True)
+
+silver_files = sorted(SILVER_DIR.glob("*.json"))
+silver_file = silver_files[-1]
+
+df = pd.read_json(silver_file)
+
+today = datetime.today().strftime("%Y-%m-%d")
+gold_file = GOLD_DIR / f"{today}.parquet"
+
+df.to_parquet(gold_file, engine="pyarrow", index=False)
+
+print(f"Dados finais gravados em: {gold_file}")
+print(f"Total de registros: {len(df)}")
 ```
 
-### Parar o Docker Compose caso esteja rodando
+---
+
+## Etapa 4 – Enriquecimento com LLM (ChatGPT)
+
+Nesta etapa, o modelo **GPT-4o-mini** gera um resumo executivo das variações cambiais diárias e mensais das 5 principais moedas frente ao real (BRL).
+
+### Dependências:
 ```bash
-docker compose stop
+pip install python-dotenv pyarrow openai
 ```
 
-# Modo Terminal 
+---
 
-### Iniciando o armazenamento distribuído com MinIO:
+## Tecnologias Utilizadas
+| Componente | Função |
+|-------------|---------|
+| **Python** | Linguagem principal |
+| **Pandas** | Manipulação e normalização de dados |
+| **PyArrow** | Conversão para Parquet |
+| **Requests** | Consumo da API de câmbio |
+| **OpenAI (GPT-4o-mini)** | Geração de insights |
+| **dotenv** | Gestão segura de variáveis (.env) |
+| **Chatgpt**| Ajuda na codificação e processos|
 
-Logando no container para configurar os buckets.
-```bash
-docker exec -it minio sh
-```
+---
 
-
-### Configurar o MINIO
-Adicionar o alias para acessar ao ambiente. 
-```bash
-mc alias set local http://minio:9000 sudoers123 sudoers1234
-```
-
-
-### Crie um bucket para armazenar os dados:
-Criar os buckets que irão servir para armazenar os dados. Criaremos as camadas raw, trusted e refined para o Data Lake.
-```bash
-mc mb local/raw
-mc mb local/trusted
-mc mb local/refined
-```
-
-
-### Copiar arquivo para dentro do MINIO
-```bash
-mc cp /home/dim_pessoas.csv  local/raw/dim_pessoas/dim_pessoas.csv
-```
-
-### Sete o bucket para que sejam públicos.
-```bash
-mc anonymous set public local/raw
-mc anonymous set public local/trusted
-mc anonymous set public local/refined
-```
-
-### Utilizar o AWS CLI (Opcional)
-O MinIO é compatível com o protocolo S3, então você também pode usar o aws-cli para listar e visualizar arquivos.
-Faça a configuração no host.
-
-    Configure o aws-cli para o MinIO:
-        Configure o perfil para o MinIO:
-
-```bash
-aws configure --profile minio
-
-    Access Key: sudoers123
-    Secret Key: sudoers1234
-    Default region: Deixe vazio
-    Default output: json
-```
-
-Liste os buckets:
-
-```bash
-aws s3 ls --endpoint-url http://localhost:9000 --profile minio
-
-# Liste os arquivos em um bucket:
-
-aws s3 ls s3://raw --endpoint-url http://localhost:9000 --profile minio
-```
-
-
-
-# Visualizar UI
-Abra o browser na sua máquina e acesso a url:`http://localhost:9000`
-
-```bash
-user:sudoers123
-pass:sudoers1234
-```
-
-## Modo Nutela
-Via UI faça a criação de um bucket com nome `staging`
-
-
-
-# Continue no quickstart/README.md
+## Aluno:
+**Priscilla Cavalcanti de Almeida**  
+Trabalho Python Programming for Data Engineers – 2025 - MBA DE_07  
+priscilla.almeida@aluno.faculdadeimpacta.com.br
